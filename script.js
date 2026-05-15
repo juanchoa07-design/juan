@@ -218,14 +218,40 @@ window.addEventListener('scroll', () => {
 // ══════════════════════════════════════════
 //  CONTACT FORM SUBMIT
 // ══════════════════════════════════════════
-document.getElementById('contact-form').addEventListener('submit', e => {
+document.getElementById('contact-form').addEventListener('submit', async e => {
     e.preventDefault();
-    const btn = document.getElementById('form-btn');
-    btn.textContent     = 'Message sent ✓';
-    btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
-    setTimeout(() => {
-        btn.textContent     = 'Send message →';
-        btn.style.background = '';
-        e.target.reset();
-    }, 3000);
+    const btn  = document.getElementById('form-btn');
+    const form = e.target;
+
+    btn.textContent  = 'Sending…';
+    btn.disabled     = true;
+
+    try {
+        const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+            method:  'POST',
+            headers: { 'Accept': 'application/json' },
+            body:    new FormData(form)
+        });
+
+        if (res.ok) {
+            btn.textContent      = 'Message sent ✓';
+            btn.style.background = 'linear-gradient(135deg,#059669,#10b981)';
+            form.reset();
+            setTimeout(() => {
+                btn.textContent      = 'Send message →';
+                btn.style.background = '';
+                btn.disabled         = false;
+            }, 3000);
+        } else {
+            throw new Error();
+        }
+    } catch {
+        btn.textContent      = 'Something went wrong — try again';
+        btn.style.background = 'linear-gradient(135deg,#dc2626,#ef4444)';
+        setTimeout(() => {
+            btn.textContent      = 'Send message →';
+            btn.style.background = '';
+            btn.disabled         = false;
+        }, 3000);
+    }
 });
