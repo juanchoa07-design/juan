@@ -1,4 +1,30 @@
 // ══════════════════════════════════════════
+//  INTRO SPLASH
+// ══════════════════════════════════════════
+(function () {
+    const splash = document.getElementById('intro-splash');
+    const video  = document.getElementById('intro-video');
+    const skip   = document.getElementById('intro-skip');
+
+    function dismiss() {
+        splash.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    if (!splash) return;
+
+    document.body.style.overflow = 'hidden';
+
+    // If video file doesn't exist or fails to load, skip immediately
+    video.addEventListener('error', dismiss);
+    video.addEventListener('ended', dismiss);
+    skip.addEventListener('click', dismiss);
+
+    // Fallback: never block the user more than 6 seconds
+    setTimeout(dismiss, 6000);
+})();
+
+// ══════════════════════════════════════════
 //  PARTICLES
 // ══════════════════════════════════════════
 const canvas = document.getElementById('ptc');
